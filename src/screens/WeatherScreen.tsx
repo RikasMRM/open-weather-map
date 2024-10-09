@@ -3,8 +3,9 @@ import {
   View,
   Text,
   StyleSheet,
-  Button,
+  TouchableOpacity,
   ActivityIndicator,
+  SafeAreaView,
 } from "react-native";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { fetchWeather } from "../store/weatherSlice";
@@ -24,35 +25,74 @@ const WeatherScreen: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : error ? (
-        <View>
-          <Text style={styles.error}>{error}</Text>
-          <Text>
-            Please check your internet connection and location permissions.
-          </Text>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <View style={styles.contentContainer}>
+          {loading ? (
+            <ActivityIndicator size="large" color="#0000ff" />
+          ) : error ? (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>{error}</Text>
+              <Text style={styles.errorSubtext}>
+                Please check your internet connection and location permissions.
+              </Text>
+            </View>
+          ) : (
+            <WeatherDisplay weatherData={data} />
+          )}
         </View>
-      ) : (
-        <WeatherDisplay weatherData={data} />
-      )}
-      <Button title="Refresh" onPress={handleRefresh} disabled={loading} />
-    </View>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleRefresh}
+          disabled={loading}
+        >
+          <Text style={styles.buttonText}>Refresh</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
     padding: 20,
   },
-  error: {
+  contentContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorContainer: {
+    alignItems: "center",
+  },
+  errorText: {
     color: "red",
+    fontSize: 16,
+    fontWeight: "bold",
     marginBottom: 10,
     textAlign: "center",
+  },
+  errorSubtext: {
+    textAlign: "center",
+    color: "#555",
+  },
+  button: {
+    backgroundColor: "#007AFF",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginTop: 20,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 
